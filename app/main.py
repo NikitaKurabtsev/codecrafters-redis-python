@@ -1,6 +1,6 @@
 import socket
 
-from constants import (
+from .constants import (
     SERVER_HOST,
     SERVER_PORT,
 )
