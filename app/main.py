@@ -1,6 +1,5 @@
 import socket
 from threading import Thread
-from typing import List
 
 from .constants import (
     SERVER_HOST,
@@ -8,14 +7,14 @@ from .constants import (
     MAX_BUFFER_SIZE,
 )
 
+PONG = b"+PONG\r\n"
+
 
 def connection_handler(client_connection: socket.socket) -> None:
-    input_data = client_connection.recv(MAX_BUFFER_SIZE)
-    response = b"+PONG\r\n"
-
     while True:
+        input_data = client_connection.recv(MAX_BUFFER_SIZE)
         if b"ping" in input_data:
-            client_connection.sendall(response)
+            client_connection.sendall(PONG)
 
 
 def main():
