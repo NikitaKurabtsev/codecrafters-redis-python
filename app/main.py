@@ -18,6 +18,8 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             break
         writer.write(input_stream)
         await writer.drain()
+    writer.close()
+    await writer.wait_closed()
 
 
 async def main():
