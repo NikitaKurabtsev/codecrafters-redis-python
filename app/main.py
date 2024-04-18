@@ -19,8 +19,8 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
         if input_stream == b"ping":
             writer.write(PONG)
         else:
-            print(input_stream)
-            writer.write(input_stream)
+            input_stream_encoded = (b"+" + input_stream + b"\r\n")
+            writer.write(input_stream_encoded)
         await writer.drain()
     writer.close()
     await writer.wait_closed()
