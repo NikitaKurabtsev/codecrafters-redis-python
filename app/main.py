@@ -1,5 +1,6 @@
 import socket
-from threading import Thread
+import asyncio
+from asyncio import StreamReader, StreamWriter
 
 from .constants import (
     SERVER_HOST,
@@ -10,20 +11,21 @@ from .constants import (
 PONG = b"+PONG\r\n"
 
 
-def connection_handler(client_connection: socket.socket) -> None:
+async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
     while True:
-        input_data = client_connection.recv(MAX_BUFFER_SIZE)
-        if b"ping" in input_data:
-            client_connection.sendall(PONG)
+        input_stream = await reader.read(MAX_BUFFER_SIZE)
+        if not input_stream:
+            break
+        if b"ping" in input_stream:
+            writer.write(PONG)
+            await writer.drain()
 
 
-def main():
-    server_socket = socket.create_server((SERVER_HOST, SERVER_PORT), reuse_port=True)
-    while True:
-        client_socket = server_socket.accept()[0]
-        thread = Thread(target=connection_handler, args=[client_socket])
-        thread.start()
+async def main():
+    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, SERVER_PORT)
+    async with server:
+        await server.serve_forever()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
