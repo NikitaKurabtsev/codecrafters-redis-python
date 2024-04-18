@@ -16,7 +16,10 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
         input_stream = await reader.read(MAX_BUFFER_SIZE)
         if not input_stream:
             break
-        writer.write(input_stream)
+        if input_stream == b"ping":
+            writer.write(PONG)
+        else:
+            writer.write(input_stream)
         await writer.drain()
     writer.close()
     await writer.wait_closed()
