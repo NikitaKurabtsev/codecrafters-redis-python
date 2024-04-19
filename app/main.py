@@ -12,17 +12,18 @@ PONG = b"+PONG\r\n"
 
 
 async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
-    async with writer:
-        while True:
-            input_stream = await reader.read(MAX_BUFFER_SIZE)
-            if not input_stream:
-                break
-            if input_stream == b"ping":
-                writer.write(PONG)
-            else:
-                input_stream_encoded = (b"+" + input_stream + b"\r\n")
-                writer.write(input_stream_encoded)
-            await writer.drain()
+    while True:
+        input_stream = await reader.read(MAX_BUFFER_SIZE)
+        if not input_stream:
+            break
+        if input_stream == b"ping":
+            writer.write(PONG)
+        else:
+            input_stream_encoded = (b"+" + input_stream + b"\r\n")
+            writer.write(input_stream_encoded)
+        await writer.drain()
+    writer.close()
+    await writer.wait_closed()
 
 
 async def main():
