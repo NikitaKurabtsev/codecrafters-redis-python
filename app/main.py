@@ -1,4 +1,3 @@
-import socket
 import asyncio
 from asyncio import StreamReader, StreamWriter
 
@@ -12,19 +11,25 @@ PONG = b"+PONG\r\n"
 
 # TODO: Implement redis SimpleString Encoder
 
-def simple_string_encoder(string: bytes) -> bytes:
-    encoded_string = b"+" + string + b"\r\n"
+def simple_string_encoder(stream_data: bytes) -> bytes:
+    encoded_string = b"+" + stream_data + b"\r\n"
+
     return encoded_string
+
+
+def parse_input_stream(stream_data: bytes) -> bytes:
+    parsed_data = stream_data.split(b"\r\n")[-2]
+
+    return parsed_data
 
 
 async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
     while True:
         input_stream = await reader.read(MAX_BUFFER_SIZE)
-        print(input_stream)
-        parsed_stream_data = input_stream.split(b"\r\n")[-2]
-        print(input_stream.split(b"\r\n"))
-        print(parsed_stream_data)
+
+        parsed_stream_data = parse_input_stream(input_stream)
         message = simple_string_encoder(parsed_stream_data)
+
         if not input_stream:
             break
         if parsed_stream_data == b"ping":
