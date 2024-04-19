@@ -13,7 +13,7 @@ PONG = b"+PONG\r\n"
 # TODO: Implement redis SimpleString Encoder
 
 def simple_string_encoder(string: bytes) -> bytes:
-    encoded_string = f"+ {string} \r\n".encode()
+    encoded_string = f"+{string}\r\n".encode()
     return encoded_string
 
 
