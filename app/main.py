@@ -22,6 +22,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
         input_stream = await reader.read(MAX_BUFFER_SIZE)
         print(input_stream)
         parsed_stream_data = input_stream.split(b"\r\n")[-2]
+        print(input_stream.split(b"\r\n"))
         print(parsed_stream_data)
         message = simple_string_encoder(parsed_stream_data)
         if not input_stream:
