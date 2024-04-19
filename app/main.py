@@ -20,7 +20,9 @@ def simple_string_encoder(string: bytes) -> bytes:
 async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
     while True:
         input_stream = await reader.read(MAX_BUFFER_SIZE)
+        print(input_stream)
         parsed_stream_data = input_stream.split(b"\r\n")[-2]
+        print(parsed_stream_data)
         message = simple_string_encoder(parsed_stream_data)
         if not input_stream:
             break
