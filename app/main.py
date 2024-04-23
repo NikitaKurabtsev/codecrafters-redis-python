@@ -28,7 +28,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             writer.write(PONG)
 
         elif command == b"echo":
-            writer.write(input_stream.split(b"\r\n")[-1])
+            writer.write(input_stream.split(b"\r\n")[-2])
 
         elif command == b"set":
             database_manager.add_record(key, value)
