@@ -14,7 +14,7 @@ class InputStreamParser:
     @staticmethod
     def parse_input_stream(input_stream: bytes) -> bytes:
         """Parses the command from the input stream."""
-        parsed_data = input_stream.split(b"\r\n")[1]
+        parsed_data = input_stream.split(b"\r\n")[2]
 
         return parsed_data
 
