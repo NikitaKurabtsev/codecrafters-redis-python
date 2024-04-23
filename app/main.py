@@ -20,6 +20,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
         if not input_stream:
             break
 
+        print(input_stream.split(b"\r\n"))
         command = parser.parse_input_stream(input_stream)
         message = parser.simple_string_encoder(input_stream)
         key, value = parser.parse_key_value(input_stream)
