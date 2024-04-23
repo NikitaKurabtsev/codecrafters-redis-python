@@ -5,14 +5,14 @@ from .constants import (
     SERVER_HOST,
     SERVER_PORT,
     MAX_BUFFER_SIZE,
+    PONG
 )
 from .database import RedisDataBaseManager
+from .encoders import simple_string_encoder
 from .parser import InputStreamParser
 
 database_manager = RedisDataBaseManager()
 parser = InputStreamParser()
-
-PONG = b"+PONG\r\n"
 
 async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
     while True:
@@ -20,12 +20,15 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
         if not input_stream:
             break
 
-        command = parser.parse_input_stream(input_stream)
-        message = parser.simple_string_encoder(input_stream)
+        command = parser.parse_command(input_stream)
+        message = simple_string_encoder(input_stream)
         key, value = parser.parse_key_value(input_stream)
 
         if command == b"ping":
             writer.write(PONG)
+
+        elif command == b"echo":
+            writer.write(input_stream.split(b"\r\n")[-1])
 
         elif command == b"set":
             database_manager.add_record(key, value)
