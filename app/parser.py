@@ -11,7 +11,7 @@ class InputStreamParser:
     @staticmethod
     def parse_key_value(input_stream: bytes) -> Tuple[bytes, bytes]:
         """Parses the key and value from the input stream."""
-        key = input_stream.split(b"\r\n")[-2]
-        value = input_stream.split(b"\r\n")[-1]
+        key = input_stream.split(b"\r\n")[-3]
+        value = input_stream.split(b"\r\n")[-2]
 
         return key, value
