@@ -6,34 +6,34 @@ from .constants import (
     SERVER_PORT,
     MAX_BUFFER_SIZE,
 )
+from .database import RedisDataBaseManager
+from .parser import InputStreamParser
+
+database_manager = RedisDataBaseManager()
+parser = InputStreamParser()
 
 PONG = b"+PONG\r\n"
-
-# TODO: Implement redis SimpleString Encoder
-
-def simple_string_encoder(stream_data: bytes) -> bytes:
-    encoded_string = b"+" + stream_data + b"\r\n"
-
-    return encoded_string
-
-
-def parse_input_stream(stream_data: bytes) -> bytes:
-    parsed_data = stream_data.split(b"\r\n")[-2]
-
-    return parsed_data
-
 
 async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
     while True:
         input_stream = await reader.read(MAX_BUFFER_SIZE)
-
-        parsed_stream_data = parse_input_stream(input_stream)
-        message = simple_string_encoder(parsed_stream_data)
-
         if not input_stream:
             break
-        if parsed_stream_data == b"ping":
+
+        command = parser.parse_input_stream(input_stream)
+        message = parser.simple_string_encoder(input_stream)
+        key, value = parser.parse_key_value(input_stream)
+
+        if command == b"ping":
             writer.write(PONG)
+
+        elif command == b"set":
+            database_manager.add_record(key, value)
+
+        elif command == b"get":
+            record = database_manager.fetch_record_by_key(key)
+            writer.write(record.value)
+
         else:
             writer.write(message)
         await writer.drain()
