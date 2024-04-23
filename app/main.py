@@ -5,7 +5,8 @@ from .constants import (
     SERVER_HOST,
     SERVER_PORT,
     MAX_BUFFER_SIZE,
-    PONG
+    PONG,
+    OK
 )
 from .database import RedisDataBaseManager
 from .encoders import simple_string_encoder
@@ -25,21 +26,28 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
         key, value = parser.parse_key_value(input_stream)
 
         if command == b"ping":
-            writer.write(PONG)
+            encoded_message = simple_string_encoder(PONG)
+            writer.write(encoded_message)
 
         elif command == b"echo":
-            writer.write(input_stream.split(b"\r\n")[-2])
+            encoded_message = simple_string_encoder(input_stream.split(b"\r\n")[-2])
+            writer.write(encoded_message)
 
         elif command == b"set":
             database_manager.add_record(key, value)
+            encoded_message = simple_string_encoder(OK)
+            writer.write(encoded_message)
 
         elif command == b"get":
             record = database_manager.fetch_record_by_key(key)
-            writer.write(record.value)
+            encoded_message = simple_string_encoder(record.value)
+            writer.write(encoded_message)
 
         else:
             writer.write(message)
+
         await writer.drain()
+
     writer.close()
     await writer.wait_closed()
 
