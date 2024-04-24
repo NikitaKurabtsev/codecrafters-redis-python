@@ -40,7 +40,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             writer.write(encoded_message)
 
         elif command == b"get":
-            key = input_stream.split(b"\r\n")[-1]
+            key = input_stream.split(b"\r\n")[-2]
             print("KEY: ", key)
             record = database_manager.fetch_record_by_key(key)
             print(record)
