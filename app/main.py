@@ -6,7 +6,8 @@ from .constants import (
     SERVER_PORT,
     MAX_BUFFER_SIZE,
     PONG,
-    OK
+    OK,
+    BULK_STRING
 )
 from .database import RedisDataBaseManager
 from .encoders import simple_string_encoder
@@ -44,8 +45,11 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             print("KEY: ", key)
             print(database_manager.records)
             record = database_manager.fetch_record_by_key(key)
+            if record:
+                encoded_message = simple_string_encoder(record.value)
+            else:
+                encoded_message = simple_string_encoder(BULK_STRING)
             print(record)
-            encoded_message = simple_string_encoder(record.value)
             writer.write(encoded_message)
 
         else:
