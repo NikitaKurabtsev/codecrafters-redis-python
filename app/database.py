@@ -8,7 +8,7 @@ class RedisDataBase:
     key: bytes
     value: bytes
     expiry: datetime = field(
-        default=lambda: datetime.now() + timedelta(milliseconds=100)
+        default_factory=lambda: datetime.now() + timedelta(milliseconds=100)
     )
 
     def is_expired(self) -> bool:
