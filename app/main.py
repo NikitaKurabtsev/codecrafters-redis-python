@@ -20,32 +20,27 @@ parser = InputStreamParser()
 async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
     while True:
         input_stream = await reader.read(MAX_BUFFER_SIZE)
-        print(input_stream.split(b"\r\n"))
         if not input_stream:
             break
 
-        command = parser.parse_command(input_stream.lower())
+        command = parser.parse_command(input_stream)
         message = simple_string_encoder(input_stream)
 
         if command == b"ping":
-            print("ping block")
             encoded_message = simple_string_encoder(PONG)
             writer.write(encoded_message)
 
         elif command == b"echo":
-            print("echo block")
             encoded_message = simple_string_encoder(input_stream.split(b"\r\n")[-2])
             writer.write(encoded_message)
 
-        elif command == b"set":
-            print("set block")
+        elif command == b"SET":
             key, value = parser.parse_key_value(input_stream)
             database_manager.add_record(key, value)
-            encoded_message = simple_string_encoder(OK.decode())
+            encoded_message = simple_string_encoder(OK)
             writer.write(encoded_message)
 
-        elif command == b"get":
-            print("get block")
+        elif command == b"GET":
             key = input_stream.split(b"\r\n")[-2]
             record = database_manager.fetch_record_by_key(key)
 
