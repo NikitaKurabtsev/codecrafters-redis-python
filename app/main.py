@@ -35,6 +35,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             writer.write(encoded_message)
 
         elif command == b"set":
+            print(simple_string_encoder(OK))
             key, value = parser.parse_key_value(input_stream)
             database_manager.add_record(key, value)
             encoded_message = simple_string_encoder(OK)
