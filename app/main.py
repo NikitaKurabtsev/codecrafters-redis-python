@@ -20,6 +20,7 @@ parser = InputStreamParser()
 async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
     while True:
         input_stream = await reader.read(MAX_BUFFER_SIZE)
+        print(input_stream)
         if not input_stream:
             break
 
