@@ -1,4 +1,5 @@
 import asyncio
+import argparse
 from asyncio import StreamReader, StreamWriter
 
 from .constants import (
@@ -15,6 +16,10 @@ from .parser import InputStreamParser
 
 database_manager = RedisDataBaseManager()
 parser = InputStreamParser()
+arg_parser = argparse.ArgumentParser()
+arg_parser.add_argument("--port", type=int ,default=6380)
+args = arg_parser.parse_args()
+
 
 async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -> None:
     while True:
@@ -59,7 +64,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
 
 
 async def main():
-    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, SERVER_PORT)
+    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, args.port)
     async with server:
         await server.serve_forever()
 
