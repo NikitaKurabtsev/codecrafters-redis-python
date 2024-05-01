@@ -1,4 +1,5 @@
 import asyncio
+import argparse
 from asyncio import StreamReader, StreamWriter
 
 from .constants import (
@@ -58,11 +59,14 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
     await writer.wait_closed()
 
 
-async def main():
-    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, SERVER_PORT)
+async def main(arguments):
+    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, arguments.port)
     async with server:
         await server.serve_forever()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument("--port", type=int, default=6379)
+    args = arg_parser.parse_args()
+    asyncio.run(main(args))
