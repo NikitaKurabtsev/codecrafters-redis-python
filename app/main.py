@@ -30,7 +30,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             encoded_message = simple_string_encoder(PONG)
             writer.write(encoded_message)
 
-        elif command == b"echo":
+        elif command == b"ECHO":
             encoded_message = bulk_string_encoder(input_stream.split(b"\r\n")[-2])
             writer.write(encoded_message)
 
