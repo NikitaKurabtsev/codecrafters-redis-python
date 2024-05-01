@@ -24,7 +24,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
         if not input_stream:
             break
 
-        command = parser.parse_command(input_stream)
+        command = parser.parse_command(input_stream.lower())
         message = simple_string_encoder(input_stream)
 
         if command == b"ping":
