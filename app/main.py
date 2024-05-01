@@ -35,11 +35,9 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             writer.write(encoded_message)
 
         elif command == b"set":
-            print(simple_string_encoder(OK))
             key, value = parser.parse_key_value(input_stream)
             database_manager.add_record(key, value)
             encoded_message = simple_string_encoder(OK)
-            print(encoded_message)
             writer.write(encoded_message)
 
         elif command == b"get":
@@ -61,14 +59,14 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
     await writer.wait_closed()
 
 
-async def main(arguments):
-    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, arguments.port)
+async def main(args):
+    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, SERVER_PORT)
     async with server:
         await server.serve_forever()
 
 
 if __name__ == "__main__":
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("--port", type=int, default=6379)
-    args = arg_parser.parse_args()
+    arg_parse = argparse.ArgumentParser()
+    arg_parse.add_argument("--port")
+    args = arg_parse.parse_args()
     asyncio.run(main(args))
