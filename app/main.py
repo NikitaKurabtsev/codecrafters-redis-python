@@ -11,7 +11,7 @@ from .constants import (
     NULL_BULK_STRING
 )
 from .database import RedisDataBaseManager
-from .encoders import simple_string_encoder
+from .encoders import simple_string_encoder, bulk_string_encoder
 from .parser import InputStreamParser
 
 database_manager = RedisDataBaseManager()
@@ -46,7 +46,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             record = database_manager.fetch_record_by_key(key)
 
             if record:
-                encoded_message = simple_string_encoder(record.value)
+                encoded_message = bulk_string_encoder(record.value)
             else:
                 encoded_message = NULL_BULK_STRING
             writer.write(encoded_message)
