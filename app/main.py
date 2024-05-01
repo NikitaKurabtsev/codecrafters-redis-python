@@ -31,7 +31,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
             writer.write(encoded_message)
 
         elif command == b"echo":
-            encoded_message = simple_string_encoder(input_stream.split(b"\r\n")[-2])
+            encoded_message = bulk_string_encoder(input_stream.split(b"\r\n")[-2])
             writer.write(encoded_message)
 
         elif command == b"SET":
