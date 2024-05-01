@@ -60,7 +60,7 @@ async def handle_client_connection(reader: StreamReader, writer: StreamWriter) -
 
 
 async def main(args):
-    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, SERVER_PORT)
+    server = await asyncio.start_server(handle_client_connection, SERVER_HOST, args.port)
     async with server:
         await server.serve_forever()
 
