@@ -7,9 +7,7 @@ from typing import List, Optional
 class RedisDataBase:
     key: bytes
     value: bytes
-    expiry: datetime = field(
-        default_factory=lambda: datetime.now() + timedelta(milliseconds=100)
-    )
+    expiry: datetime
 
     def is_expired(self) -> bool:
         if datetime.now() >= self.expiry:
@@ -22,8 +20,10 @@ class RedisDataBaseManager:
     def __init__(self):
         self.records: List[RedisDataBase] = []
 
-    def add_record(self, key: bytes, value: bytes) -> None:
-        record = RedisDataBase(key, value)
+    def add_record(self, key: bytes, value: bytes, expiry: bytes) -> None:
+        expiry_str = expiry.decode()
+        expiry_datetime = datetime.now() + timedelta(milliseconds=int(expiry_str))
+        record = RedisDataBase(key, value, expiry_datetime)
         self.records.append(record)
 
     def fetch_record_by_key(self, key: bytes) -> Optional[RedisDataBase]:

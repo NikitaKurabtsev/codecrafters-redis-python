@@ -9,9 +9,11 @@ class InputStreamParser:
         return command
 
     @staticmethod
-    def parse_key_value(input_stream: bytes) -> Tuple[bytes, bytes]:
+    def parse_key_value_expiry(input_stream: bytes) -> Tuple[bytes, bytes, bytes]:
         """Parses the key and value from the input stream."""
-        key = input_stream.split(b"\r\n")[4]
-        value = input_stream.split(b"\r\n")[6]
+        request_data = input_stream.split(b"\r\n")
+        key = request_data[4]
+        value = request_data[6]
+        expiry = request_data[-2]
 
-        return key, value
+        return key, value, expiry
